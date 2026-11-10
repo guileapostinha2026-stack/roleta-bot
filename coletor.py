@@ -68,7 +68,7 @@ async def iniciar_coletor():
         print("A iniciar o navegador...")
         browser = await p.chromium.launch_persistent_context(
             user_data_dir=user_data_dir,
-            headless=False,
+            headless=True,
             args=[
                 "--disable-blink-features=AutomationControlled",
                 "--no-sandbox",
