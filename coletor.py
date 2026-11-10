@@ -64,7 +64,7 @@ async def iniciar_coletor():
     async with async_playwright() as p:
         user_data_dir = os.path.join(os.getcwd(), "user_data_bethor")
         
-        print("A iniciar o navegador...")
+        print("A iniciar o navegador em modo headless...")
         browser = await p.chromium.launch_persistent_context(
             user_data_dir=user_data_dir,
             headless=True,
