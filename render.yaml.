@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: roleta-bot
+    env: python
+    buildCommand: pip install -r requirements.txt && playwright install chromium
+    startCommand: python coletor.py
