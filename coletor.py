@@ -1,6 +1,11 @@
 import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
+import asyncio
+from playwright.async_api import async_playwright
+import json
+import urllib.request
+import urllib.parse
 
 # Servidor web falso para manter o Render feliz e ativo
 class SimpleHandler(BaseHTTPRequestHandler):
@@ -16,15 +21,9 @@ def run_fake_server():
 
 # Arranca o servidor web falso numa thread separada
 threading.Thread(target=run_fake_server, daemon=True).start()
-import asyncio
-from playwright.async_api import async_playwright
-import os
-import json
-import urllib.request
-import urllib.parse
 
-# ⚠️ COLOCA AQUI O TEU TOKEN NOVO DO BOTFATHER
-TELEGRAM_TOKEN = "9016660120:AAFdnNRo7NDjIAsbUKA6TX1blNlbgFexD68"
+# Token e Chat ID do Telegram
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "9016660120:AAFdnNRo7NDjIAsbUKA6TX1blNlbgFexD68")
 CHAT_ID = "@roletadoguile"
 
 PLACAR_GREENS = 0
@@ -73,7 +72,8 @@ async def iniciar_coletor():
                 "--disable-blink-features=AutomationControlled",
                 "--no-sandbox",
                 "--disable-infobars",
-                "--start-maximized"
+                "--disable-dev-shm-usage",
+                "--disable-gpu"
             ],
             ignore_default_args=["--enable-automation"]
         )
@@ -92,7 +92,7 @@ async def iniciar_coletor():
                         data = json.loads(msg)
                     else:
                         data = json.loads(msg.decode('utf-8', errors='ignore'))
-                    
+                
                     def procurar_chaves(obj):
                         nonlocal ultimo_enviado, sinal_ativo
                         global PLACAR_GREENS, PLACAR_REDS
@@ -152,7 +152,7 @@ async def iniciar_coletor():
                                         
                                         enviar_telegram(texto_sinal)
                                         print("📤 Novo sinal enviado com sucesso!")
-                                procurar_chaves(v)
+                                    procurar_chaves(v)
                         elif isinstance(obj, list):
                             for item in obj:
                                 procurar_chaves(item)
